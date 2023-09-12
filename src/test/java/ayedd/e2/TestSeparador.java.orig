@@ -1,0 +1,215 @@
+package ayedd.e2;
+
+import java.time.Instant;
+import java.time.Duration;
+import edu.princeton.cs.algs4.Out;
+
+import java.util.Random;
+import java.util.List;
+
+import static org.assertj.core.util.Lists.newArrayList;
+import static org.assertj.core.api.Assertions.*;
+import org.assertj.core.util.Arrays;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+
+public class TestSeparador {
+
+    public boolean isPartitioned(int[] a){
+	for (int i=0; i < a.length - 1; i++)
+	    if (a[i] >= 0 && a[i+1] < 0) return false;
+	return true;
+    }
+
+    
+    public void test(int[] a) {
+	//
+	// No I/O Tests in this assignment.
+	//
+	
+	// But we must push something
+	// to scripts/ioests.sh by sending something to stdout so that
+	// a target/surefire-reports/ayedd.E2.TestSeparador-output.txt
+	// file exists and so scripts/ioTests.sh is happy processing
+	// something, even if it's a lonely newline ;-) Must rethink
+	// this stupid mechanism.
+	System.out.println("\n");
+
+	//
+	// Test of Separator.separator()
+	//
+	
+	// make a copy of original array to produce nicer test info
+	int[] originalArray = new int[a.length];
+	System.arraycopy(a, 0, originalArray, 0, a.length);
+
+	// SUT 
+	int[] result = Separador.separa(a);
+
+	// convert to lists the arrays so we can assert with
+	// hasSameElementsAs()
+	List originalArrayL = Arrays.asList(originalArray);
+	List resultL = Arrays.asList(result);	
+	
+	// check if all the original elements are in the result
+	// hasSameElementsAs() does not take into account duplicates, thus
+	// we must test sizes are equal + hasSameElementsAs()
+	assertThat(resultL).hasSameElementsAs(originalArrayL).hasSize(originalArrayL.size());
+	
+	// Check if separa() partitions in-place (a requirement of
+	// the spec)
+	assertSame("separa() no devuelve el mismo array que recibe como parámetro", a, result);
+
+	// check invariant: negatives before zeros and positives
+	assertTrue("El array devuelto por separa() " +
+		   resultL +
+		   " no está bien dividido. El original era:" + originalArrayL, isPartitioned(result));
+
+    }
+
+    
+    @Test
+    public void NullArray() {
+	int[] a = {};
+	test(a);
+    }
+
+    @Test
+    public void YaEstanSeparados() {
+	int[] a = {-1350, -1, -9, 7, 4, 9, 8, 0, 22};
+	test(a);
+    }
+
+    @Test
+    public void PositivoNegativoPositivo() {
+	int[] a = {8, -1, 7};
+	test(a);
+    }
+
+    @Test
+    public void NegativoPositivoNegativo() {
+	int[] a = {-8, 1, -7};
+	test(a);
+    }
+
+    @Test
+    public void NegativoNegativoPositivo() {
+	int[] a = {-8, -1, 7};
+	test(a);
+    }
+
+    @Test
+    public void PositivoPositivoNegativo() {
+	int[] a = {8, 1, -7};
+	test(a);
+    }
+    
+    @Test
+    public void NegativosCeroYPositivosMediano() {
+	int[] a = {8, -1, 7, 4, 9, -9, 0, 22, -1350};
+	test(a);
+    }
+
+
+    @Test
+    public void NegativosCeroYPositivosGrande() {
+        Random r = new Random(17);
+
+	int a[] = new int[100];
+	for (int i = 0; i < a.length; i++) {
+   		 a[i] = r.nextInt();
+	}
+	
+	test(a);
+    }
+
+
+    @Test
+    public void DosNegativos() {
+	int[] a = {-7, -9};
+	test(a);	
+    }
+
+    @Test
+    public void DosPositivos() {
+	int[] a = {7, 9};
+	test(a);	
+    }
+
+    @Test
+    public void TodoPositivos() {
+	int[] a = {3, 5, 7, 9};
+	test(a);	
+    }
+
+
+    @Test
+    public void CerosYPositivos() {
+	int[] a = {3, 5, 0, 0, 9, 0};
+	test(a);	
+    }
+
+    @Test
+    public void TodosNegativos() {
+	int[] a = {-2, -7, -120, -111};
+	test(a);	
+    }
+
+
+    @Test
+    public void UnNegativo() {
+	int[] a = {-2};
+	test(a);
+    }
+
+    @Test
+    public void UnPositivo() {
+	int[] a = {2};
+	test(a);
+    }
+    
+
+    @Test
+    public void UnCero() {
+	int[] a = {0};
+	test(a);
+    }
+    
+    @Test
+    public void Rendimiento() {
+    	final int SIZE_A = 1000;
+	
+    	int a[] = new int[SIZE_A];
+
+    	for (int i = 0; i < a.length / 2; i++) {
+	    a[i] = 1;
+    	}
+
+    	for (int i = a.length / 2; i < a.length; i++) {
+	    a[i] = -1;
+    	}
+	
+	String comentario = "Array con " + SIZE_A / 2 + " 1s y " + SIZE_A / 2 + " -1s";
+	
+	final int runs = 100;
+    	Instant start = Instant.now();
+	for (int i = 0; i < runs; i++){
+	    test(a);
+	}
+	Instant finish = Instant.now();
+    	long time = Duration.between(start, finish).toMillis()/runs;
+	
+    	Out timeFile = new Out("src/test/java/ayedd/e2/time.txt");
+    	timeFile.println(Long.toString(time));
+    	timeFile.close();
+    }
+
+}
+

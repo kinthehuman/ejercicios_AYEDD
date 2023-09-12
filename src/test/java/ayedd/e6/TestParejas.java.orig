@@ -1,0 +1,124 @@
+package ayedd.e6;
+
+import java.time.Instant;
+import java.time.Duration;
+import edu.princeton.cs.algs4.Out;
+
+import java.util.Random;
+import java.util.Arrays;
+
+import java.util.Properties;
+
+import static org.assertj.core.api.Assertions.*;
+
+import java.io.File;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.rules.Timeout;
+
+import org.junit.contrib.java.lang.system.ExpectedSystemExit ;
+import org.junit.Rule;
+
+
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.any;
+import static org.powermock.api.mockito.PowerMockito.*;
+
+
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(fullyQualifiedNames = "ayedd.e6.*")
+public class TestParejas {
+    @Rule
+    public Timeout globalTimeout = new Timeout(80000);
+
+
+    public void ioTest(boolean fast, String comentario, String esperado, String[] args) {
+	System.out.println("\n"+ comentario + "\nEsperado:");
+	System.out.print(esperado);
+	System.out.print("----");
+	System.out.println("\nEncontrado:");
+
+	if (fast)
+	    ParejasIgualesFast.main(args);
+	else
+	    ParejasIguales.main(args);
+	    
+	System.out.println("----");
+    }
+
+    @Test
+    public void TestParejas_1() {
+	String comentario = "TestParejas_1 1\n" + "7\n" + "2\n" + "6\n" + "1\n" + "2\n" + "5\n" + "2\n" + "4\n" + "1\n" + "2\n" + "3\n";
+
+	String esperado = "9\n";
+    	String[] args = {"e6/parejas-1.txt"};
+	
+	ioTest(false, comentario, esperado, args);
+    }
+
+    @Test
+    public void TestParejas_2() {
+	String comentario = "TestParejas_2 1\n" + "7\n" + "2\n" + "6\n" + "1\n";
+
+	String esperado = "1\n";
+    	String[] args = {"e6/parejas-2.txt"};
+	
+	ioTest(false, comentario, esperado, args);
+    }
+    
+
+    @Test
+    public void TestParejas_1_fast() {
+	String comentario = "TestParejas_1_fast 1\n" + "7\n" + "2\n" + "6\n" + "1\n" + "2\n" + "5\n" + "2\n" + "4\n" + "1\n" + "2\n" + "3\n";
+
+	String esperado = "9\n";
+    	String[] args = {"e6/parejas-1.txt"};
+	
+	ioTest(true, comentario, esperado, args);
+    }
+
+    @Test
+    public void TestParejas_2_fast() {
+	String comentario = "TestParejas_2_fast 1\n" + "7\n" + "2\n" + "6\n" + "1\n";
+
+	String esperado = "1\n";
+    	String[] args = {"e6/parejas-2.txt"};
+	
+	ioTest(true, comentario, esperado, args);
+    }
+    
+
+    @Test
+    public void TestParejas_3() {
+    	String comentario = "TestParejas_3 20 unos, 15 cincos, 105 ochos.";
+
+    	String esperado = "5755\n";
+    	String[] args = {"e6/parejas-3.txt"};
+	
+    	ioTest(false, comentario, esperado, args);
+    }
+
+    @Test
+    public void TestParejas_3_fast() {
+    	String comentario = "TestParejas_3_fast 20 unos, 15 cincos, 105 ochos.";
+
+    	String esperado = "5755\n";
+    	String[] args = {"e6/parejas-3.txt"};
+	
+    	ioTest(true, comentario, esperado, args);
+    }
+    
+}
+

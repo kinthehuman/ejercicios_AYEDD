@@ -1,0 +1,180 @@
+package ayedd.E1;
+
+import java.time.Instant;
+import java.time.Duration;
+import edu.princeton.cs.algs4.Out;
+
+import java.util.Random;
+import java.util.Arrays;
+
+import java.util.Properties;
+
+import static org.assertj.core.api.Assertions.*;
+
+import java.io.File;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.rules.Timeout;
+
+import org.junit.contrib.java.lang.system.ExpectedSystemExit ;
+import org.junit.Rule;
+
+
+public class TestSumaEnterosArray {
+    @Rule
+    public Timeout globalTimeout = new Timeout(40000);
+
+    @Rule
+    public final ExpectedSystemExit exit = ExpectedSystemExit.none();
+
+    public void ioTest(String comentario, String esperado, String[] args) {
+	System.out.println("\n"+ comentario + "\nEsperado:");
+	System.out.print(esperado);
+	System.out.print("----");
+	System.out.println("\nEncontrado:");
+	SumaEnterosArray.main(args);
+	System.out.println("----");
+    }
+
+    
+    @Test
+    public void SumandosDelMismoTamanoSinAcarreo() {
+	int a[] = {8,8,8};
+	int b[] = {1,0,0};
+        int r[] = {9,8,8};
+	String comentario = Arrays.toString(a) + " + " + Arrays.toString(b);
+
+	String esperado = "[9, 8, 8]\n";
+    	String[] args = {"E1/888.txt","E1/100.txt"};
+	ioTest(comentario, esperado, args);
+
+	assertThat(SumaEnterosArray.suma(a,b)).as(comentario).containsExactly(r);
+    }
+
+
+    @Test
+    public void SumandosDelMismoTamanoConAcarreo() {
+	int a[] =   {8,8,8};
+	int b[] =   {8,8,8};
+        int r[] = {1,7,7,6};
+	String comentario = Arrays.toString(a) + " + " + Arrays.toString(b);
+
+	String esperado = "[1, 7, 7, 6]\n";
+	String[] args = {"E1/888.txt","E1/888.txt"};
+	ioTest(comentario, esperado, args);
+
+	assertThat(SumaEnterosArray.suma(a,b)).as(comentario).containsExactly(r);
+    }
+
+
+    @Test
+    public void SumandosDeDistintoTamanoSinAcarreo() {
+	int a[] =   {1,0,0};
+	int b[] = {1,8,8,8};
+        int r[] = {1,9,8,8};
+	String comentario = Arrays.toString(a) + " + " + Arrays.toString(b);
+
+	String esperado = "[1, 9, 8, 8]\n";
+	String[] args = {"E1/100.txt","E1/1888.txt"};
+	ioTest(comentario, esperado, args);
+
+	assertThat(SumaEnterosArray.suma(a,b)).as(comentario).containsExactly(r);
+    }
+
+    @Test
+    public void SumandosDeDistintoTamanoSinAcarreo2() {
+	int a[] = {1,8,8,8};
+	int b[] =   {1,0,0};
+        int r[] = {1,9,8,8};
+	String comentario = Arrays.toString(a) + " + " + Arrays.toString(b);
+
+	String esperado = "[1, 9, 8, 8]\n";
+    	String[] args = {"E1/1888.txt","E1/100.txt"};
+	ioTest(comentario, esperado, args);
+
+	assertThat(SumaEnterosArray.suma(a,b)).as(comentario).containsExactly(r);
+    }
+
+    @Test
+    public void SumandosDeDistintoTamanoConAcarreo() {
+	int a[] =   {8,8,8};
+	int b[] = {1,8,8,8};
+        int r[] = {2,7,7,6};
+	String comentario = Arrays.toString(a) + " + " + Arrays.toString(b);
+
+	String esperado = "[2, 7, 7, 6]\n";
+    	String[] args = {"E1/888.txt","E1/1888.txt"};
+	ioTest(comentario, esperado, args);
+
+	assertThat(SumaEnterosArray.suma(a,b)).as(comentario).containsExactly(r);
+    }
+
+    @Test
+    public void SumandosDeDistintoTamanoConAcarreo2() {
+	int a[] = {1,8,8,8};
+	int b[] =   {8,8,8};
+        int r[] = {2,7,7,6};
+	String comentario = Arrays.toString(a) + " + " + Arrays.toString(b);
+
+	String esperado = "[2, 7, 7, 6]\n";
+    	String[] args = {"E1/1888.txt","E1/888.txt"};
+	ioTest(comentario, esperado, args);
+
+	assertThat(SumaEnterosArray.suma(a,b)).as(comentario).containsExactly(r);
+    }
+
+    @Test
+    public void GrandesNoCabenEnInt() {
+	int a[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+	int b[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+	int r[] = {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2};
+	String comentario = Arrays.toString(a) + " + " + Arrays.toString(b);
+
+	String esperado = "[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]\n";
+    	String[] args = {"E1/muchos-unos.txt","E1/muchos-unos.txt"};
+	ioTest(comentario, esperado, args);
+
+	assertThat(SumaEnterosArray.suma(a,b)).as(comentario).containsExactly(r);
+    }
+
+
+    
+    @Test
+    public void Rendimiento() {
+    	final int SIZE_A = 10000;
+	
+    	int a[] = new int[SIZE_A];
+    	int b[] = new int[SIZE_A/2];	
+	
+
+    	for (int i = 0; i < a.length; i++) {
+	    a[i] = 1;
+	    
+	    if (i < b.length)
+		b[i] = 0;
+    	}
+	
+	String comentario = "Suma de array de 10^5 1s con array de 10^5/2 0s";
+	
+	final int runs = 10;
+    	Instant start = Instant.now();
+	for (int i = 0; i < runs; i++){
+	    int[] result = SumaEnterosArray.suma(a,b);
+	    // 111111..11111 + 0000 = 111111..11111
+	    assertThat(result).as(comentario).containsExactly(a);
+	}
+	Instant finish = Instant.now();
+    	long time = Duration.between(start, finish).toMillis()/runs;
+	
+    	Out timeFile = new Out("src/test/java/ayedd/E1/time.txt");
+    	timeFile.println(Long.toString(time));
+    	timeFile.close();
+    }
+    
+}

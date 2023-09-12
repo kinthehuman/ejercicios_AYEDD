@@ -1,0 +1,490 @@
+package ayedd.e3;
+
+import java.time.Instant;
+import java.time.Duration;
+import edu.princeton.cs.algs4.Out;
+
+import java.util.Random;
+import java.util.Arrays;
+
+import java.util.Properties;
+
+import static org.assertj.core.api.Assertions.*;
+
+import java.io.File;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.rules.Timeout;
+
+import org.junit.contrib.java.lang.system.ExpectedSystemExit ;
+import org.junit.Rule;
+
+
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.any;
+import static org.powermock.api.mockito.PowerMockito.*;
+
+
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(fullyQualifiedNames = "ayedd.e3.*")
+public class TestInt {
+    @Rule
+    public Timeout globalTimeout = new Timeout(40000);
+
+    public void ioTest(String comentario, String esperado, String[] args) {
+	System.out.println("\n"+ comentario + "\nEsperado:");
+	System.out.print(esperado);
+	System.out.print("----");
+	System.out.println("\nEncontrado:");
+	ClientInt.main(args);
+	System.out.println("----");
+    }
+
+
+
+    //
+    // equals()
+    //
+    @Test
+    public void EqualsTest() {
+	Int i = new Int("1111");
+	Int j = new Int("1111");
+
+	boolean b = i.equals(j);
+
+	assertTrue("No funciona el método equals()", b);
+    }
+
+    
+    //
+    // Tests para comprobar que existen los 3 constructores y se pueden usar
+    //
+
+    @Test
+    public void SeLlamaDosVecesAlConstructorDeStringsDesdeMainTest() throws Exception {
+	whenNew(Int.class).withAnyArguments().thenReturn(mock(Int.class));
+
+	String[] args = {"1111", "+", "2222"};
+	ClientInt.main(args);
+
+	verifyNew(Int.class).withArguments("1111");
+	verifyNew(Int.class).withArguments("2222");	
+    }
+
+    @Test
+    public void ConstructorQueRecibeintImplementadoTest() throws Exception {
+	Int i = new Int(2222);
+	Int j = new Int(3333);
+
+	i.plus(j);
+
+	assertEquals("No funciona el constructor que recibe un int como parámetro: new Int(2222) + new Int(3333) ",
+		     "5555", i.toString());
+    }
+
+    @Test
+    public void ConstructorQueRecibeIntImplementadoTest() throws Exception {
+	Int i = new Int(new Int("1111"));
+	Int j = new Int(new Int("1111"));
+
+	i.plus(j);
+
+	assertEquals("No funciona el constructor que recibe un Int como parámetro: new Int(new Int(\"1111\")) + " + "new Int(new Int(\"1111\"))",
+		     "2222", i.toString());
+    }
+    
+
+    //
+    // Tests para comprobar que se llama a métodos de instancia add / minus 
+    //
+    @Test
+    public void SeLlamaAMetodoDeInstanciaPlusTest() throws Exception {
+	Int mockedInt = mock(Int.class);
+	
+	whenNew(Int.class).withArguments("2222").thenReturn(mockedInt);
+
+	String args[] = {"2222", "+", "2222"};
+	ClientInt.main(args);
+
+	verify(mockedInt, times(1)).plus(any(Int.class));
+    }
+
+    @Test
+    public void SeLlamaAMetodoDeInstanciaMinusTest() throws Exception {
+	Int mockedInt = mock(Int.class);
+	
+	whenNew(Int.class).withArguments("2222").thenReturn(mockedInt);
+
+	String args[] = {"2222", "-", "2222"};
+	ClientInt.main(args);
+
+	verify(mockedInt, times(1)).plus(any(Int.class));
+	verify(mockedInt, times(1)).minus();	
+    }
+    
+
+    //
+    // Tests of invalid input: must call System.exit(1)
+    //
+    
+    @Rule
+    public final ExpectedSystemExit exit = ExpectedSystemExit.none();
+
+
+    @Test
+    public void NonIntegerInArgs0Test()  {
+	exit.expectSystemExitWithStatus(1);
+
+	String args[] = {"aaaa", "+", "2222"};
+	ClientInt.main(args);
+    }
+
+    @Test
+    public void NonIntegerInArgs2Test()  {
+	exit.expectSystemExitWithStatus(1);
+
+	String args[] = {"2222", "+", "aaaa"};
+	ClientInt.main(args);
+    }
+
+    @Test
+    public void OperatorInvalidArgs1Test()  {
+	exit.expectSystemExitWithStatus(1);
+
+	String args[] = {"2222", "k", "2222"};
+	ClientInt.main(args);
+    }
+
+    
+    //
+    // Tests de sumas y restas + io_tests.
+    // Cada test hace test de método y io_test
+    //
+    
+    private void doTest(String a, String b, String operation,
+			String comentario, String esperado) {
+	Int A = new Int(a);
+	Int B = new Int(b);
+
+	if (operation.equals("-"))
+	    B.minus();
+	A.plus(B);
+
+	assertEquals(comentario, esperado, A.toString());
+    }
+
+    @Test
+    public void SumaDelMismoTamanoSinAcarreoTest() {
+	String a = "888";
+	String operation = "+";
+	String b = "100";
+	String esperado = "988";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+
+
+    @Test
+    public void SumaDelMismoTamanoConAcarreoTest() {
+    	String a = "888";
+    	String operation = "+";
+    	String b = "888";
+    	String esperado = "1776";
+	
+    	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+    	String args[] = {a, operation, b};
+    	ioTest(comentario, esperado+"\n", args);
+    }
+
+    
+    @Test
+    public void SumaDeDistintoTamanoSinAcarreoTest() {
+    	String a = "100";
+    	String operation = "+";
+    	String b = "1888";
+    	String esperado = "1988";
+	
+    	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+    	String args[] = {a, operation, b};
+    	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void SumaDeDistintoTamanoSinAcarreo2Test() {
+    	String a = "1888";
+    	String operation = "+";
+    	String b = "100";
+    	String esperado = "1988";
+	
+    	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+    	String args[] = {a, operation, b};
+    	ioTest(comentario, esperado+"\n", args);
+    }
+    
+    @Test
+    public void SumaDeDistintoTamanoConAcarreoTest() {
+    	String a = "888";
+    	String operation = "+";
+    	String b = "1888";
+    	String esperado = "2776";
+	
+    	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+    	String args[] = {a, operation, b};
+    	ioTest(comentario, esperado+"\n", args);
+    }
+    
+    @Test
+    public void SumaDeDistintoTamanoConAcarreo2Test() {
+    	String a = "1888";
+    	String operation = "+";
+    	String b = "888";
+    	String esperado = "2776";
+	
+    	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+    	String args[] = {a, operation, b};
+    	ioTest(comentario, esperado+"\n", args);
+    }
+    
+    @Test
+    public void SumaGrandesSinAcarreo() {
+    	String a = "11111111111111111111111111111111111111111111111111111111";
+    	String operation = "+";
+    	String b = "11111111111111111111111111111111111111111111111111111111";
+    	String esperado = "22222222222222222222222222222222222222222222222222222222";
+	
+    	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+    	String args[] = {a, operation, b};
+    	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void SumaGrandesTest() {
+    	String a = "999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999";
+    	String operation = "+";
+    	String b = "19709265726984509168719123697561576919275617892651278956912856127708706809787876785786129304913230104999999123048120784929199919491234910978123512389571397159357189579572591895128957125812759816518926180578192371275128971285165019856123895612389516205189235916258915612895126598126956123581923651235";
+    	String esperado = "1000000000000000000000000000000000000000000000000000000000000000000019709265726984509168719123697561576919275617892651278956912856127708706809787876785786129304913230104999999123048120784929199919491234910978123512389571397159357189579572591895128957125812759816518926180578192371275128971285165019856123895612389516205189235916258915612895126598126956123581923651234";
+	
+    	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+    	String args[] = {a, operation, b};
+    	ioTest(comentario, esperado+"\n", args);
+    }
+
+
+    @Test
+    public void RestaDelMismoTamanoSinAcarreoTest() {
+    	String a = "888";
+    	String operation = "-";
+    	String b = "100";
+    	String esperado = "788";
+	
+    	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+    	String args[] = {a, operation, b};
+    	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void RestaConSustraendoNegativo() {
+    	String a = "888";
+    	String operation = "-";
+    	String b = "-100";
+    	String esperado = "988";
+	
+    	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+    	String args[] = {a, operation, b};
+    	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void RestaConMinuendoNegativo() {
+    	String a = "-888";
+    	String operation = "-";
+    	String b = "100";
+    	String esperado = "-988";
+	
+    	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+    	String args[] = {a, operation, b};
+    	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void RestaConMinuendoySustraendoNegativo() {
+    	String a = "-888";
+    	String operation = "-";
+    	String b = "-100";
+    	String esperado = "-788";
+	
+    	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+    	String args[] = {a, operation, b};
+    	ioTest(comentario, esperado+"\n", args);
+    }
+    
+
+    @Test
+    public void RestaDelMismoTamanoConAcarreoTest() {
+    	String a = "888";
+    	String operation = "-";
+    	String b = "119";
+    	String esperado = "769";
+	
+    	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+    	String args[] = {a, operation, b};
+    	ioTest(comentario, esperado+"\n", args);
+    }
+
+    
+    @Test
+    public void RestaDeDistintoTamanoSinAcarreoTest() {
+    	String a = "1888";
+    	String operation = "-";
+    	String b = "7";
+    	String esperado = "1881";
+	
+    	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+    	String args[] = {a, operation, b};
+    	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void RestaDeDistintoTamanoSinAcarreo2Test() {
+    	String a = "1888";
+    	String operation = "-";
+    	String b = "111";
+    	String esperado = "1777";
+	
+    	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+    	String args[] = {a, operation, b};
+    	ioTest(comentario, esperado+"\n", args);
+    }
+    
+    @Test
+    public void RestaDeDistintoTamanoConAcarreoTest() {
+    	String a = "1888";
+    	String operation = "-";
+    	String b = "999";
+    	String esperado = "889";
+	
+    	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+    	String args[] = {a, operation, b};
+    	ioTest(comentario, esperado+"\n", args);
+    }
+    
+    @Test
+    public void RestaGrandesSinAcarreoTest() {
+    	String a = "22222222222222222222222222222222222222222222222222222222";
+    	String operation = "-";
+    	String b = "11111111111111111111111111111111111111111111111111111111";
+	            
+    	String esperado = "11111111111111111111111111111111111111111111111111111111";
+	
+    	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+    	String args[] = {a, operation, b};
+    	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void RestaGrandesSinAcarreo2Test() {
+    	String a = "11111111111111111111111111111111111111111111111111111111";
+    	String operation = "-";
+    	String b = "11111111111111111111111111111111111111111111111111111111";
+	            
+    	String esperado = "0";
+	
+    	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+    	String args[] = {a, operation, b};
+    	ioTest(comentario, esperado+"\n", args);
+    }
+    
+    @Test
+    public void RestaGrandes3Test() {
+    	String a = "19709265726984509168719123697561576919275617892651278956912856127708706809787876785786129304913230104999999123048120784929199919491234910978123512389571397159357189579572591895128957125812759816518926180578192371275128971285165019856123895612389516205189235916258915612895126598126956123581923651235";
+    	String operation = "-";
+    	String b = "999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999";
+    	String esperado = "-999999999999999999999999999999999999999999999999999999999999999999980290734273015490831280876302438423080724382107348721043087143872291293190212123214213870695086769895000000876951879215070800080508765089021876487610428602840642810420427408104871042874187240183481073819421807628724871028714834980143876104387610483794810764083741084387104873401873043876418076348764";
+	
+    	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+    	String args[] = {a, operation, b};
+    	ioTest(comentario, esperado+"\n", args);
+    }
+    
+    @Test
+    public void RendimientoTest() {
+    	String fileName = "src/test/java/ayedd/e3/time.txt";
+	
+    	String a = "19709265726984509168719123697561576919275617892651278956912856127708706809787876785786129304913230104999999123048120784929199919491234910978123512389571397159357189579572591895128957125812759816518926180578192371275128971285165019856123895612389516205189235916258915612895126598126956123581923651235";
+    	String operation = "-";
+    	String b = "999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999";
+    	String esperado = "-999999999999999999999999999999999999999999999999999999999999999999980290734273015490831280876302438423080724382107348721043087143872291293190212123214213870695086769895000000876951879215070800080508765089021876487610428602840642810420427408104871042874187240183481073819421807628724871028714834980143876104387610483794810764083741084387104873401873043876418076348764";
+	
+
+    	final int runs = 10;
+    	Instant start = Instant.now();
+    	for (int i = 0; i < runs; i++){
+    	    Int A = new Int (a);
+    	    Int B = new Int (b);	    
+
+    	    B.minus();
+    	    A.plus(B);
+    	    // Don't assert anything, already tested in another test
+    	}
+    	Instant finish = Instant.now();
+    	long time = Duration.between(start, finish).toMillis()/runs;
+	
+    	Out timeFile = new Out(fileName);
+    	timeFile.println(Long.toString(time));
+    	timeFile.close();
+    }
+
+}
+

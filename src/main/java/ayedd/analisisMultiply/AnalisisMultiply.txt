@@ -1,0 +1,50 @@
+﻿Análisis del método multiply
+
+
+Mi método multiply() considera los distintos casos  de productos (las cuatro combinaciones de positivo y negativo posibles) y convierte los factores en enteros positivos con iteraciones de método minus(), antes de llamar a un método auxiliar producto() que realiza multiplicación de números positivos (si el resultado es negativo, multiply volverá a llamar a minus() cuando reciba el resultado.
+
+
+El método producto() crea un array de arrays (sumandos), que almacena tantos arrays como cifras tenga el segundo factor(x), y de longitud igual a la suma de ambos factores(x + y). Posteriormente, crea un bucle que itroduce arrays en el array de sumandos, y dentro de él otro bucle que genera los arrays que se introducen. El primer bucle tiene x iteraciones, y el segundo y, siendo x e y las cifras del segundo y el primer factor, respectivamente. Finalmente, se llama al método suma() para sumar los arrays de sumandos dentro de un bucle de x iteraciones. El método suma() en sí tiene un bucle de tantas iteraciones como longitud tenga el mayor de los arrays.
+
+
+Hay, por tanto, dos bucles anidados, uno a la hora de de generar los sumandos, y otro a la hora de sumarlos. El de generación de sumandos siempre es de x * y iteraciones, mientras que el de suma tiene x * (x + y) iteraciones. Un uso óptimo del método colocará en x el término de menos cifras.
+
+
+En nuestro test tenemos dos sumandos, uno de longitud fija (42), y otro de longitud variable determinada por n. Por tanto x e y adoptan los valores de 2 y n. Volviendo a nuestros bucles anidados, tenemos dos posibles ejecuciones. En una ejecución óptima, llamamos al método multiply con n.multiply(42), consiguiendo así 2 * (n + 2) iteraciones, crecimiento lineal. Por el contrario, si llamamos al método de la forma 42.multiply(n), la suma final tendrá n * (n + 2) iteraciones, puesto que tendremos n sumandos de longitud (n + 2). 
+
+
+Los datos empíricos usando DoublingRatio respaldan esta teoría, dando las siguientes salidas para llamadas al método multiply() usando 42 como argumento del método aplicado sobre un Int de n cifras:
+
+     n:          t:     ratio:
+  16000     0.0   1.3
+  32000     0.0   0.8
+  64000     0.0   1.3
+ 128000     0.0   2.0
+ 256000     0.0   1.4
+ 512000     0.0   1.8
+1024000     0.0   1.6
+2048000     0.1   2.7
+4096000     0.2   1.9
+8192000     0.3   1.8
+16384000     0.4   1.3
+32768000     0.7   1.7
+65536000     1.2   1.8
+
+Se puede observar que el ratio se mantiene alrededor de 2, dando a entender que el crecimiento es lineal.
+
+
+Sin embargo, con llamadas al método multiply() usando el Int de n cifras como argumento y aplicado a 42, DoublingRatio nos da la siguiente salida:
+
+     n:        t:    ratio:
+    250     0.0   1.0
+    500     0.0   2.5
+   1000     0.0   2.0
+   2000     0.0   4.2
+   4000     0.2   3.6
+   8000     0.5   3.6
+  16000     1.6   2.9
+
+En este caso, no sólo obtenemos un ratio aproximado a 4, indicativo de crecimiento cuadrático, sino que la generación de sumandos llena la memoria a un ritmo mucho más rápido, siendo imposible operar con valores de n superiores a 16000, frente a los 65536000 del uso óptimo.
+
+
+Como conclusión, multiply() es un método cuya ejecución varía dráticamente en función de como se emplee, al menos en los casos en los que tengamos factores de longitudes considerablemente distintas.

@@ -1,0 +1,93 @@
+package ayedd.e11;
+
+import java.time.Instant;
+import java.time.Duration;
+import edu.princeton.cs.algs4.Out;
+
+import java.util.Random;
+import java.util.Arrays;
+
+import java.util.Properties;
+
+import static org.assertj.core.api.Assertions.*;
+
+import java.io.File;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.rules.Timeout;
+
+import org.junit.contrib.java.lang.system.ExpectedSystemExit ;
+import org.junit.Rule;
+
+
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.any;
+import static org.powermock.api.mockito.PowerMockito.*;
+
+
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(fullyQualifiedNames = "ayedd.e11.*")
+public class TestGraphPoint2D {
+    @Rule
+    public Timeout globalTimeout = new Timeout(80000);
+
+
+    public void ioTest(String comentario, String esperado, String[] args) {
+	System.out.println("\n"+ comentario + "\nEsperado:");
+	System.out.print(esperado);
+	System.out.print("----");
+	System.out.println("\nEncontrado:");
+
+	GraphClient.main(args);
+
+	    
+	System.out.println("----");
+    }
+
+    @Test
+    public void TestGraph_1() {
+	String comentario = "java GraphClient edges.txt 0.05 0.17 0.52 0.27 d";
+
+	String esperado =
+	    "(0.05, 0.17)\n"+
+	    "(0.10, 0.29)\n"+
+	    "(0.20, 0.39)\n"+
+	    "(0.35, 0.40)\n"+
+	    "(0.52, 0.32)\n"+
+	    "(0.52, 0.27)\n";
+
+    	String[] args = {"e11/edges.txt", "0.05", "0.17", "0.52", "0.27", "d");
+	ioTest(comentario, esperado, args);
+    }
+
+    @Test
+    public void TestGraph_2() {
+	String comentario = "java GraphClient edges.txt 0.05 0.17 0.52 0.27 c";
+
+	String esperado =
+	    "(0.05, 0.17)\n"+ 
+	    "(0.10, 0.29)\n"+  
+	    "(0.20, 0.39)\n"+  
+	    "(0.31, 0.29)\n"+  
+	    "(0.35, 0.40)\n"+  
+	    "(0.52, 0.32)\n"+  
+	    "(0.52, 0.27)\n"; 
+
+	String[] args = {"e11/edges.txt", "0.05", "0.17", "0.52", "0.27", "c");
+	ioTest(comentario, esperado, args);
+    }
+    
+    
+}

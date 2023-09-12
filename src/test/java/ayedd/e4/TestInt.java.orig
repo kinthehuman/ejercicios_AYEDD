@@ -1,0 +1,446 @@
+package ayedd.e4;
+
+import java.time.Instant;
+import java.time.Duration;
+import edu.princeton.cs.algs4.Out;
+
+import java.util.Random;
+import java.util.Arrays;
+
+import java.util.Properties;
+
+import static org.assertj.core.api.Assertions.*;
+
+import java.io.File;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.rules.Timeout;
+
+import org.junit.contrib.java.lang.system.ExpectedSystemExit ;
+import org.junit.Rule;
+
+
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.any;
+import static org.powermock.api.mockito.PowerMockito.*;
+
+
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(fullyQualifiedNames = "ayedd.e4.*")
+public class TestInt {
+    @Rule
+    public Timeout globalTimeout = new Timeout(80000);
+
+    public void ioTest(String comentario, String esperado, String[] args) {
+	System.out.println("\n"+ comentario + "\nEsperado:");
+	System.out.print(esperado);
+	System.out.print("----");
+	System.out.println("\nEncontrado:");
+	ClientInt.main(args);
+	System.out.println("----");
+    }
+
+
+
+    //
+    // Tests de multiply + io_tests.
+    // Cada test hace test de método y io_test
+    //
+    
+    private void doTest(String a, String b, String operation,
+			String comentario, String esperado) {
+	Int A = new Int(a);
+	Int B = new Int(b);
+
+	A.multiply(B);
+
+	assertEquals(comentario, esperado, A.toString());
+    }
+
+    @Test
+    public void MultiplyTestAllDigits() {
+	String a = "123456789";
+	String operation = "x";
+	String b = "987654321";
+	String esperado = "121932631112635269";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void MultiplyTestAllDigitsReverse() {
+	String a = "987654321";
+	String operation = "x";
+	String b = "123456789";
+	
+	String esperado = "121932631112635269";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+    
+
+    @Test
+    public void MultiplyPor10000Test() {
+	String a = "8888888888888888888888888888888888888888888";
+	String operation = "x";
+	String b = "10000";
+	String esperado = "88888888888888888888888888888888888888888880000";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+
+
+    @Test
+    public void Multiply10000PorTest() {
+	String a = "8888888888888888888888888888888888888888888";
+	String operation = "x";
+	String b = "10000";
+	
+	String esperado = "88888888888888888888888888888888888888888880000";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void MultiplyPor100Test() {
+	String a = "8888888888888888888888888888888888888888888";
+	String operation = "x";
+	String b = "100";
+	String esperado = "888888888888888888888888888888888888888888800";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+
+
+    @Test
+    public void Multiply100PorTest() {
+	String a = "8888888888888888888888888888888888888888888";
+	String operation = "x";
+	String b = "100";
+	
+	String esperado = "888888888888888888888888888888888888888888800";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+
+
+    @Test
+    public void MultiplyMenos100PorTest() {
+	String a = "-100";
+	String operation = "x";
+	String b = "8888888888888888888888888888888888888888888";
+	
+	String esperado = "-888888888888888888888888888888888888888888800";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void MultiplyPorMenos100Test() {
+	String a = "8888888888888888888888888888888888888888888";
+	String operation = "x";
+	String b = "-100";
+	
+	String esperado = "-888888888888888888888888888888888888888888800";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void MultiplyMenos10000PorTest() {
+	String a = "-10000";
+	String operation = "x";
+	String b = "8888888888888888888888888888888888888888888";
+	
+	String esperado = "-88888888888888888888888888888888888888888880000";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void MultiplyPorMenos10000Test() {
+	String a = "8888888888888888888888888888888888888888888";
+	String operation = "x";
+	String b = "-10000";
+	
+	String esperado = "-88888888888888888888888888888888888888888880000";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+	
+    
+    @Test
+    public void MultiplyGrandeTest() {
+	String a = "987390923952935873901887975230895723490857242394570285723094572345";
+	String operation = "x";
+	String b = "28947502876892372570234957459234349999999999999999978245789235729570495729348572";
+	String esperado = "28582501611745029075053026312428233531666884080107590286222649952815431956451126426131337888780444291057725290635458642956944598325974535776441340";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+
+
+    @Test
+    public void MultiplyGrande2Test() {
+	String a = "28947502876892372570234957459234349999999999999999978245789235729570495729348572";
+	String operation = "x";
+	String b = "987390923952935873901887975230895723490857242394570285723094572345";
+	String esperado = "28582501611745029075053026312428233531666884080107590286222649952815431956451126426131337888780444291057725290635458642956944598325974535776441340";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void MultiplyGrandeNegPosTest() {
+	String a = "-987390923952935873901887975230895723490857242394570285723094572345";
+	String operation = "x";
+	String b = "28947502876892372570234957459234349999999999999999978245789235729570495729348572";
+	String esperado = "-28582501611745029075053026312428233531666884080107590286222649952815431956451126426131337888780444291057725290635458642956944598325974535776441340";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void MultiplyGrandePosNegTest() {
+	String a = "987390923952935873901887975230895723490857242394570285723094572345";
+	String operation = "x";
+	String b = "-28947502876892372570234957459234349999999999999999978245789235729570495729348572";
+	String esperado = "-28582501611745029075053026312428233531666884080107590286222649952815431956451126426131337888780444291057725290635458642956944598325974535776441340";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+    
+    @Test
+    public void MultiplyGrandeNegNegTest() {
+	String a = "-987390923952935873901887975230895723490857242394570285723094572345";
+	String operation = "x";
+	String b = "-28947502876892372570234957459234349999999999999999978245789235729570495729348572";
+	String esperado = "28582501611745029075053026312428233531666884080107590286222649952815431956451126426131337888780444291057725290635458642956944598325974535776441340";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+
+
+    @Test
+    public void Multiply9PorTest() {
+	String a = "9";
+	String operation = "x";
+	String b = "8888888888888888888888888888888888888888888";
+	
+	String esperado = "79999999999999999999999999999999999999999992";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void MultiplyPor9Test() {
+	String a = "8888888888888888888888888888888888888888888";
+	String operation = "x";
+	String b = "9";
+	
+	String esperado = "79999999999999999999999999999999999999999992";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void Multiply1PorTest() {
+	String a = "1";
+	String operation = "x";
+	String b = "8888888888888888888888888888888888888888888";
+	
+	String esperado = "8888888888888888888888888888888888888888888";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void MultiplyPor1Test() {
+	String a = "8888888888888888888888888888888888888888888";
+	String operation = "x";
+	String b = "1";
+	
+	String esperado = "8888888888888888888888888888888888888888888";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void MultiplyMenos1PorTest() {
+	String a = "-1";
+	String operation = "x";
+	String b = "8888888888888888888888888888888888888888888";
+	
+	String esperado = "-8888888888888888888888888888888888888888888";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void MultiplyPorMenos1Test() {
+	String a = "8888888888888888888888888888888888888888888";
+	String operation = "x";
+	String b = "-1";
+	
+	String esperado = "-8888888888888888888888888888888888888888888";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+	
+    @Test
+    public void Multiply0PorTest() {
+	String a = "0";
+	String operation = "x";
+	String b = "8888888888888888888888888888888888888888888";
+	
+	String esperado = "0";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+
+    @Test
+    public void MultiplyPor0Test() {
+	String a = "8888888888888888888888888888888888888888888";
+	String operation = "x";
+	String b = "0";	
+
+	String esperado = "0";
+
+	String comentario = a + " " + operation + " " + b;
+	doTest(a, b, operation, comentario, esperado);
+	
+	String args[] = {a, operation, b};
+	ioTest(comentario, esperado+"\n", args);
+    }
+    
+    
+    
+    @Test
+    public void RendimientoTest() {
+    	String fileName = "src/test/java/ayedd/e4/time.txt";
+	
+    	String a = "19709265726984509168719123697561576919275617892651278956912856127708706809787876785786129304913230104999999123048120784929199919491234910978123512389571397159357189579572591895128957125812759816518926180578192371275128971285165019856123895612389516205189235916258915612895126598126956123581923651235";
+    	String operation = "x";
+    	String b = "999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999";
+    	String esperado = "19709265726984509168719123697561576919275617892651278956912856127708706809787876785786129304913230104999999123048120784929199919491234910978123512389571397159357189579572591895128957125812759816518926180578192371275128971285165019856123895612389516205189235916258915612895126598126956123581923651234999999999999999999999999999999999999999999999999999999999999999999980290734273015490831280876302438423080724382107348721043087143872291293190212123214213870695086769895000000876951879215070800080508765089021876487610428602840642810420427408104871042874187240183481073819421807628724871028714834980143876104387610483794810764083741084387104873401873043876418076348765";
+	
+
+    	final int runs = 10;
+    	Instant start = Instant.now();
+    	for (int i = 0; i < runs; i++){
+    	    Int A = new Int (a);
+    	    Int B = new Int (b);	    
+
+    	    A.multiply(B);
+    	    // Don't assert anything, already tested in another test
+    	}
+    	Instant finish = Instant.now();
+    	long time = Duration.between(start, finish).toMillis()/runs;
+	
+    	Out timeFile = new Out(fileName);
+    	timeFile.println(Long.toString(time));
+    	timeFile.close();
+    }
+
+}
+

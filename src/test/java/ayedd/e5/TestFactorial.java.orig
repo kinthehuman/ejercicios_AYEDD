@@ -1,0 +1,318 @@
+package ayedd.e5;
+
+import edu.princeton.cs.algs4.Queue;
+
+import java.util.Iterator;
+
+import java.time.Instant;
+import java.time.Duration;
+import edu.princeton.cs.algs4.Out;
+
+import java.util.Random;
+import java.util.Arrays;
+
+import java.util.Properties;
+
+import static org.assertj.core.api.Assertions.*;
+
+import java.io.File;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.rules.Timeout;
+
+import org.junit.contrib.java.lang.system.ExpectedSystemExit ;
+import org.junit.Rule;
+
+
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.any;
+import static org.powermock.api.mockito.PowerMockito.*;
+
+
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(fullyQualifiedNames = "ayedd.e5.*")
+public class TestFactorial {
+    @Rule
+    public Timeout globalTimeout = new Timeout(80000);
+
+    FactorialFactory ff;
+    FactorialFactory memo_ff;
+
+    @Before
+    public void init(){
+	ff       = new FactorialFactory(false);
+	memo_ff  = new FactorialFactory(true);
+    }
+    
+    public void doIteratorTest(String comment, Iterator<Int> expectedIterator, Iterator<Int> resultIterator)
+    {
+
+	String expected = "";
+
+	while (expectedIterator.hasNext())
+	    expected += expectedIterator.next() + "\n";
+
+	
+	String result = "";
+	while (resultIterator.hasNext())
+	    result += resultIterator.next() + "\n";
+	
+
+	assertEquals(comment, expected, result);
+    }
+
+    
+    @Test
+    public void ioTests(){
+	// No IO Tests, but we generate the file
+	System.out.println("\n");
+    }
+
+    
+    @Test
+    public void factorial_0(){
+
+	Int expected = new Int(1);
+	Int result = ff.factorial(new Int(0));
+	
+	assertEquals(expected.toString(), result.toString());
+    }
+
+    @Test
+    public void factorial_1(){
+
+	Int expected = new Int(1);
+	Int result = ff.factorial(new Int(1));
+	
+	assertEquals(expected.toString(), result.toString());
+    }
+
+
+    @Test
+    public void factorial_5(){
+
+	Int expected = new Int(120);
+	Int result = ff.factorial(new Int(5));
+	
+	assertEquals(expected.toString(), result.toString());
+    }
+
+
+    @Test
+    public void factorial_2223(){
+
+	Int expected = new Int("161856307264178587455478233509115557903428151477764752280743283931454301039075027751226046016502740547443511980681094306356787269649956913893829580583515847317148820612103633736355345672342014915286006706998364868486629390976920257012651631099048828221170671780080444436926586686619189940021534048052514640312727188111872133688339272568323192585221468537854296406203443825334131798597623780365380674995520420723229104360910161494996577895634885840714339811226603883328378865032006709894803237811368248628168890148133195743310908360302183464513109219662309313529775092332259831975673452434490109287536420881095391046324828300334904961689050897925578077512553088598995355570543527367313125867385588882825931036777154455390213279805855791619248390719329879814358941665398048517278757665936075222914745554555985613921885266518093719206491044881903934230608382853560341461058716483681715971581222242003485552501993374587501795934080295977514436534358685188543667023910046898057749426097532957211367695454231696987570504452867661790192244661689966128348891217169328472965446990979111765525310444581766366977179102541416890237574188957642979083694616007338727099210468153042442136784224316453547025279074056112629855587929022432249613500459902226174319418741881201298711130772624438967404540935796051131195037849011481382990482427840368996874875952135545198863234627984785796157353997133506398092153895333707643347822332520992994474630649307410292119057224157506001763805591703200800016972836864297752009987088726270982925297625465514174840393152004138753040651169998109572661453209994704603243092267173330744853456893463186847102444117844466944810365766016836450481235613942910298847444292866340554878136709637399658009935047068964487075494991792906554267593111569587076842314636904421078558382282255578738951969049726331145602833345607441668267315323506124337933876356486945312593172422333589614500298890626187995077749074094027147274089109130984132433032935389673262406209560765312293991086582061699732250003945372999030132093691481322832901503444955857486921154174052217534244814153879122075165994749054621292372986506023655720495995538713797770017584592426318226320412295684281066103943419645519834814880264113435239176748504018038358524559443520282408772445172096055377535626114146397001433580927693061044250948796290185354133960775040631013777005615287288570797496700107905583974170807189400105618161625644608805187566809158052932933955209052102860637045882040346455544848273438191487804654832400304669435720046239454309972531256526025424749171763328303401993627326372818755266278406140268799912119008246918537779607947618707046400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+	Int result = ff.factorial(new Int(1111));
+	
+	assertEquals(expected.toString(), result.toString());
+    }
+
+
+    @Test
+    public void factorial_memo_0(){
+
+	Int expected = new Int(1);
+	Int result = memo_ff.factorial(new Int(0));
+	
+	assertEquals(expected.toString(), result.toString());
+    }
+
+    @Test
+    public void factorial_memo_1(){
+
+	Int expected = new Int(1);
+	Int result = memo_ff.factorial(new Int(1));
+	
+	assertEquals(expected.toString(), result.toString());
+    }
+
+
+    @Test
+    public void factorial_memo_5(){
+
+	Int expected = new Int(120);
+	Int result = memo_ff.factorial(new Int(5));
+	
+	assertEquals(expected.toString(), result.toString());
+    }
+
+
+    @Test
+    public void factorial_memo_100(){
+
+	Int expected = new Int("93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000");
+	Int result = memo_ff.factorial(new Int(100));
+	
+	assertEquals(expected.toString(), result.toString());
+    }
+
+
+    @Test
+    public void factorial_iter_5_5(){
+	Int m = new Int(5);
+	Int n = new Int(5);	
+
+	Queue<Int> q = new Queue<Int>();
+
+	q.enqueue(new Int(120));
+
+	String comment = "m = " + m + ", n = " + n + "  ";
+	
+	doIteratorTest(comment, q.iterator(), ff.factorial(m, n));
+    }
+
+    @Test
+    public void factorial_iter_5_10(){
+	Int m = new Int(5);
+	Int n = new Int(10);	
+
+	Queue<Int> q = new Queue<Int>();
+
+	q.enqueue(new Int(120));
+	q.enqueue(new Int(720));
+	q.enqueue(new Int(5040));
+	q.enqueue(new Int(40320));
+	q.enqueue(new Int(362880));
+	q.enqueue(new Int(3628800));
+
+	String comment = "m = " + m + ", n = " + n + "  ";
+	
+	doIteratorTest(comment, q.iterator(), ff.factorial(m, n));
+    }
+
+    @Test
+    public void factorial_iter_10_5(){
+	Int m = new Int(10);
+	Int n = new Int(5);	
+
+	Queue<Int> q = new Queue<Int>();
+
+	q.enqueue(new Int(3628800));
+	q.enqueue(new Int(362880));
+	q.enqueue(new Int(40320));
+	q.enqueue(new Int(5040));
+	q.enqueue(new Int(720));
+	q.enqueue(new Int(120));
+
+
+	String comment = "m = " + m + ", n = " + n + "  ";
+	
+	doIteratorTest(comment, q.iterator(), ff.factorial(m, n));
+    }
+
+
+    @Test
+    public void factorial_memo_iter_5_5(){
+	Int m = new Int(5);
+	Int n = new Int(5);	
+
+	Queue<Int> q = new Queue<Int>();
+	q.enqueue(new Int(120));
+
+	String comment = "m = " + m + ", n = " + n + "  ";
+	
+	doIteratorTest(comment, q.iterator(), memo_ff.factorial(m, n));
+    }
+
+    @Test
+    public void factorial_memo_iter_5_10(){
+	Int m = new Int(5);
+	Int n = new Int(10);	
+
+	Queue<Int> q = new Queue<Int>();
+
+	q.enqueue(new Int(120));
+	q.enqueue(new Int(720));
+	q.enqueue(new Int(5040));
+	q.enqueue(new Int(40320));
+	q.enqueue(new Int(362880));
+	q.enqueue(new Int(3628800));
+
+	String comment = "m = " + m + ", n = " + n + "  ";
+	
+	doIteratorTest(comment, q.iterator(), memo_ff.factorial(m, n));
+    }
+
+
+    @Test
+    public void factorial_memo_iter_10_5(){
+	Int m = new Int(10);
+	Int n = new Int(5);	
+
+	Queue<Int> q = new Queue<Int>();
+
+	q.enqueue(new Int(3628800));
+	q.enqueue(new Int(362880));
+	q.enqueue(new Int(40320));
+	q.enqueue(new Int(5040));
+	q.enqueue(new Int(720));
+	q.enqueue(new Int(120));
+
+
+	String comment = "m = " + m + ", n = " + n + "  ";
+	
+	doIteratorTest(comment, q.iterator(), memo_ff.factorial(m, n));
+    }
+
+
+    @Test
+    public void factorial_set_vacio(){
+	FactorialSet fs = new FactorialSet();
+
+	assertEquals("top() debe ser null.", null, fs.top());
+    }
+
+
+    @Test
+    public void factorial_set_0(){
+	FactorialSet fs = new FactorialSet();
+	fs.add(new Int(1));
+	
+	assertEquals("top() debe 0 tras añadir el factorial de 0.", new Int(0).toString(), fs.top().toString());
+    }
+
+
+    @Test
+    public void factorial_set_3_6(){
+	FactorialSet fs = new FactorialSet();
+
+	fs.add(new Int(1));
+	fs.add(new Int(1));	
+	fs.add(new Int(2));
+	fs.add(new Int(6));
+	fs.add(new Int(24));	
+	fs.add(new Int(120));
+	fs.add(new Int(720));
+	fs.add(new Int(5040));
+	fs.add(new Int(40320));
+	fs.add(new Int(362880));
+	fs.add(new Int(3628800));
+
+	
+	Queue<Int> q = new Queue<Int>();
+
+	q.enqueue(new Int(6));
+	q.enqueue(new Int(24));	
+	q.enqueue(new Int(120));
+	q.enqueue(new Int(720));
+
+	
+	doIteratorTest("iterador de 3 a 6 tras añadir hasta 10.", q.iterator(), fs.iterator(new Int(3), new Int(6)));
+
+    }
+    
+    
+}
+
